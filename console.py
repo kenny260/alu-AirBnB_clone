@@ -30,23 +30,23 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     def do_EOF(self, arg):
-        """Exit the console."""
+        """Exit on EOF."""
         print()
         return True
 
     def do_quit(self, arg):
-        """Quit command to exit the program."""
+        """Quit command."""
         return True
 
     def emptyline(self):
-        """Do nothing on empty input line."""
+        """Do nothing on empty input."""
         pass
 
     def do_create(self, arg):
-        """Create a new instance, save it, and print its id."""
+        """Create a new instance."""
         args = shlex.split(arg)
 
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
 
@@ -55,14 +55,15 @@ class HBNBCommand(cmd.Cmd):
             return
 
         obj = classes[args[0]]()
-        obj.save()
+        storage.new(obj)
+        storage.save()
         print(obj.id)
 
     def do_show(self, arg):
-        """Show the string representation of an instance."""
+        """Show an instance."""
         args = shlex.split(arg)
 
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
 
@@ -75,19 +76,19 @@ class HBNBCommand(cmd.Cmd):
             return
 
         key = "{}.{}".format(args[0], args[1])
-        objects = storage.all()
+        obj = storage.all().get(key)
 
-        if key not in objects:
+        if not obj:
             print("** no instance found **")
             return
 
-        print(objects[key])
+        print(obj)
 
     def do_destroy(self, arg):
-        """Delete an instance based on class name and id."""
+        """Destroy an instance."""
         args = shlex.split(arg)
 
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
 
@@ -100,23 +101,20 @@ class HBNBCommand(cmd.Cmd):
             return
 
         key = "{}.{}".format(args[0], args[1])
-        objects = storage.all()
-
-        if key not in objects:
+        if key not in storage.all():
             print("** no instance found **")
             return
 
-        del objects[key]
+        del storage.all()[key]
         storage.save()
 
     def do_all(self, arg):
-        """Print all instances, optionally filtered by class."""
+        """Show all instances."""
         args = shlex.split(arg)
-        objects = storage.all()
         result = []
 
-        if len(args) == 0:
-            for obj in objects.values():
+        if not args:
+            for obj in storage.all().values():
                 result.append(str(obj))
             print(result)
             return
@@ -125,16 +123,16 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        for key, obj in objects.items():
+        for key, obj in storage.all().items():
             if key.startswith(args[0] + "."):
                 result.append(str(obj))
         print(result)
 
     def do_update(self, arg):
-        """Update an instance by adding or updating an attribute."""
+        """Update an instance."""
         args = shlex.split(arg)
 
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
 
@@ -147,9 +145,9 @@ class HBNBCommand(cmd.Cmd):
             return
 
         key = "{}.{}".format(args[0], args[1])
-        objects = storage.all()
+        obj = storage.all().get(key)
 
-        if key not in objects:
+        if not obj:
             print("** no instance found **")
             return
 
@@ -161,20 +159,17 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
             return
 
-        obj = objects[key]
-        attr_name = args[2]
-        attr_value = args[3]
+        attr = args[2]
+        value = args[3]
 
-        # Cast attribute type if possible
-        if hasattr(obj, attr_name):
-            current_type = type(getattr(obj, attr_name))
+        if hasattr(obj, attr):
             try:
-                attr_value = current_type(attr_value)
+                value = type(getattr(obj, attr))(value)
             except Exception:
                 pass
 
-        setattr(obj, attr_name, attr_value)
-        obj.save()
+        setattr(obj, attr, value)
+        storage.save()
 
 
 if __name__ == "__main__":
