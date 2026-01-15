@@ -1,123 +1,87 @@
-# alu-AirBnB_clone
+# AirBnB Clone - The Console
 
-## Description of the Project
+## Description
+This is the first step towards building a full web application: an AirBnB clone. This project implements a command interpreter to manage AirBnB objects.
 
-This repository contains a simplified clone of the AirBnB web application. The goal of the project is to understand how to build a full web application from the ground up by incrementally developing its components. The project covers concepts such as object-oriented programming, serialization/deserialization, file storage, and building a command-line interface (CLI) to manage application data.
+## Command Interpreter
+The command interpreter allows you to:
+- Create new objects (ex: User, State, City, Place)
+- Retrieve objects from a file or database
+- Perform operations on objects (count, compute stats, etc.)
+- Update attributes of an object
+- Destroy an object
 
-At this stage, the project focuses on implementing a **command interpreter (console)** that allows users to create, update, destroy, and retrieve objects representing core AirBnB entities such as users, places, states, cities, amenities, and reviews.
-
-## Description of the Command Interpreter
-
-The command interpreter, also referred to as the **console**, is a command-line tool used to manage the objects of the AirBnB clone application.
-
-It enables the following operations:
-
-* Create new objects (e.g., User, Place)
-* Retrieve objects from storage
-* Update attributes of existing objects
-* Delete objects
-* List all objects or all objects of a specific class
-
-The console serves as the foundation for later stages of the project, including the web interface and database integration.
-
-## How to Start the Command Interpreter
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/kenny260/alu-AirBnB_clone.git
-   ```
-2. Navigate to the project directory:
-
-   ```bash
-   cd alu-AirBnB_clone
-   ```
-3. Run the console:
-
-   ```bash
-   ./console.py
-   ```
-
-You should see the prompt:
-
-```
-(hbnb)
-```
-
-## How to Use the Command Interpreter
-
-The console works in interactive mode and non-interactive mode.
-
-### Interactive Mode
-
-Start the console and type commands at the `(hbnb)` prompt.
-
-### Non-Interactive Mode
-
-Commands can be piped into the console:
-
+### How to Start
 ```bash
-echo "help" | ./console.py
+./console.py
 ```
 
-## Examples
+### How to Use
+The console works in both interactive and non-interactive mode.
 
-### Create an Object
+**Interactive mode:**
+```bash
+$ ./console.py
+(hbnb) help
 
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit  create  show  destroy  all  update
+
+(hbnb) create BaseModel
+49faff9a-6318-451f-87b6-910505c55907
+(hbnb) show BaseModel 49faff9a-6318-451f-87b6-910505c55907
+[BaseModel] (49faff9a-6318-451f-87b6-910505c55907) {'id': '49faff9a-6318-451f-87b6-910505c55907', 'created_at': datetime.datetime(2017, 10, 2, 3, 10, 25, 903293), 'updated_at': datetime.datetime(2017, 10, 2, 3, 10, 25, 903300)}
+(hbnb) quit
+$
+```
+
+**Non-interactive mode:**
+```bash
+$ echo "help" | ./console.py
+(hbnb)
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit  create  show  destroy  all  update
+(hbnb)
+$
+```
+
+### Available Commands
+- `create <class>` - Creates a new instance
+- `show <class> <id>` - Shows an instance
+- `destroy <class> <id>` - Destroys an instance
+- `all [class]` - Shows all instances or all instances of a class
+- `update <class> <id> <attribute> <value>` - Updates an instance
+- `quit` or `EOF` - Exits the console
+
+### Examples
 ```bash
 (hbnb) create User
-```
-
-Output:
-
-```
-<unique_id>
-```
-
-### Show an Object
-
-```bash
-(hbnb) show User <unique_id>
-```
-
-### Update an Object
-
-```bash
-(hbnb) update User <unique_id> first_name "John"
-```
-
-### Destroy an Object
-
-```bash
-(hbnb) destroy User <unique_id>
-```
-
-### List All Objects
-
-```bash
+b6a6e15c-c67d-4312-9a75-9d084935e579
+(hbnb) show User b6a6e15c-c67d-4312-9a75-9d084935e579
+[User] (b6a6e15c-c67d-4312-9a75-9d084935e579) {'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579', 'created_at': datetime.datetime(2017, 9, 28, 21, 5, 54, 119427), 'updated_at': datetime.datetime(2017, 9, 28, 21, 5, 54, 119572)}
 (hbnb) all
+["[User] (b6a6e15c-c67d-4312-9a75-9d084935e579) {'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579', 'created_at': datetime.datetime(2017, 9, 28, 21, 5, 54, 119427), 'updated_at': datetime.datetime(2017, 9, 28, 21, 5, 54, 119572)}"]
+(hbnb) update User b6a6e15c-c67d-4312-9a75-9d084935e579 first_name "Betty"
+(hbnb) show User b6a6e15c-c67d-4312-9a75-9d084935e579
+[User] (b6a6e15c-c67d-4312-9a75-9d084935e579) {'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579', 'created_at': datetime.datetime(2017, 9, 28, 21, 5, 54, 119427), 'updated_at': datetime.datetime(2017, 9, 28, 21, 11, 3, 49401), 'first_name': 'Betty'}
+(hbnb) destroy User b6a6e15c-c67d-4312-9a75-9d084935e579
+(hbnb) show User b6a6e15c-c67d-4312-9a75-9d084935e579
+** no instance found **
 ```
 
-### Exit the Console
-
+## Testing
+Run all tests:
 ```bash
-(hbnb) quit
+python3 -m unittest discover tests
 ```
 
-or
-
+Run specific test file:
 ```bash
-(hbnb) EOF
+python3 -m unittest tests/test_models/test_base_model.py
 ```
-
-## Repository Structure
-
-* `console.py` — The command interpreter
-* `models/` — Contains the base model and other classes
-* `models/engine/` — Storage engine (file storage)
-* `tests/` — Unit tests
 
 ## Authors
-
-See the `AUTHORS` file for the complete list of contributors.
- BINTHIA NITONDE
+See AUTHORS file
